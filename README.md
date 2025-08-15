@@ -1,6 +1,6 @@
-# Caddy Tools Collection
+# Zayo Web Tools Collection
 
-A collection of useful web-based tools for various tasks including data processing, time calculations, and utility functions.
+A comprehensive collection of web-based tools for various tasks including data processing, time calculations, and utility functions.
 
 ## 🛠️ Available Tools
 
@@ -53,8 +53,8 @@ A collection of useful web-based tools for various tasks including data processi
 
 1. **Clone the repository**:
    ```bash
-   git clone <your-repo-url>
-   cd caddy-tools
+   git clone https://github.com/adampaulsen/zayo-web-tools.git
+   cd zayo-web-tools
    ```
 
 2. **Open any tool**:
@@ -71,7 +71,7 @@ A collection of useful web-based tools for various tasks including data processi
 ## 📁 Project Structure
 
 ```
-caddy-tools/
+zayo-web-tools/
 ├── README.md
 ├── cidextractor/
 │   └── index.html          # Zayo CID Extractor
@@ -123,5 +123,5 @@ For issues or questions:
 
 ---
 
-**Last Updated**: $(date)
+**Last Updated**: August 15, 2025
 **Version**: 1.0.0
