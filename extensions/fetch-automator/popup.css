@@ -1,0 +1,152 @@
+/* popup.css */
+
+body {
+    font-family: Arial, sans-serif;
+    width: 350px;
+    padding: 10px;
+}
+
+#restoredNotification {
+    background-color: #e3f2fd;
+    border: 1px solid #2196F3;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 10px;
+    color: #1976d2;
+    font-size: 12px;
+    font-style: italic;
+    display: none;
+}
+textarea {
+    width: 99%;
+    height: 150px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 14px;
+    resize: vertical;
+    box-sizing: border-box;
+}
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: none;
+    cursor: pointer;
+    color: white; /* Default text color for all buttons */
+    transition: background-color 0.2s ease; /* Smooth transition for color changes */
+}
+
+/* Default button colors */
+#startButton {
+    background-color: #4CAF50; /* Green */
+}
+#startButton:hover {
+    background-color: #45a049;
+}
+#stopButton {
+    background-color: #f44336; /* Red */
+}
+#stopButton:hover {
+    background-color: #da190b;
+}
+
+#viewFailedButton {
+    background-color: #FF9800; /* Orange */
+    margin-top: 5px;
+}
+#viewFailedButton:hover {
+    background-color: #F57C00;
+}
+
+/* UI State Management (applied to the body element) */
+
+/* State: Idle (Default) */
+body.ui-state-idle #startButton {
+    display: block;
+}
+body.ui-state-idle #stopButton {
+    display: none;
+}
+body.ui-state-idle textarea {
+    cursor: auto;
+    background-color: white;
+    color: initial;
+}
+
+/* State: Starting/Running */
+body.ui-state-starting #startButton,
+body.ui-state-running #startButton,
+body.ui-state-stopping #startButton {
+    display: none;
+}
+body.ui-state-starting #stopButton,
+body.ui-state-running #stopButton,
+body.ui-state-stopping #stopButton {
+    display: block;
+    background-color: #f44336; /* Red for stopping */
+}
+body.ui-state-starting textarea,
+body.ui-state-running textarea,
+body.ui-state-stopping textarea {
+    cursor: not-allowed;
+    background-color: #e9e9e9;
+    color: #555;
+}
+
+/* State: Completed (Success or Errors) */
+body.ui-state-completed-success #startButton,
+body.ui-state-completed-errors #startButton {
+    display: block; /* Allow starting a new automation */
+}
+body.ui-state-completed-success #stopButton,
+body.ui-state-completed-errors #stopButton {
+    display: block; /* Keep stop button visible but as "Completed!" */
+    cursor: default; /* No pointer on hover when completed */
+}
+
+/* Show view failed button only when there are failed items */
+#viewFailedButton {
+    display: none; /* Hidden by default */
+}
+
+body.ui-state-completed-success #stopButton {
+    background-color: #2196F3; /* Blue for successful completion */
+}
+body.ui-state-completed-success #stopButton:hover {
+    background-color: #2196F3;
+}
+
+body.ui-state-completed-errors #stopButton {
+    background-color: #FFC107; /* Amber/Orange for completion with errors */
+}
+body.ui-state-completed-errors #stopButton:hover {
+    background-color: #FFC107;
+}
+
+/* State: Initial Error (e.g., script injection failed, invalid tab) */
+body.ui-state-errored-init #startButton {
+    display: block;
+}
+body.ui-state-errored-init #stopButton {
+    display: none;
+}
+body.ui-state-errored-init textarea {
+    cursor: auto;
+    background-color: white;
+    color: initial;
+}
+
+
+#status {
+    margin-top: 10px;
+    font-weight: bold;
+    color: blue;
+    white-space: pre-wrap;
+}
+/* Specific status text colors for clarity */
+body.ui-state-completed-success #status { color: #008000; } /* Green */
+body.ui-state-completed-errors #status { color: #D32F2F; } /* Red */
+body.ui-state-errored-init #status { color: #D32F2F; } /* Red */
+body.ui-state-stopping #status { color: #FFA500; } /* Orange */

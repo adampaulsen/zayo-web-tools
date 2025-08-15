@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Salesforce Automation",
+  "version": "1.2",
+  "description": "Automates pasting data into Salesforce fields and saving across page reloads.",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"  // Added storage permission
+  ],
+  "background": {
+    "service_worker": "background.js" // Declared background script
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "images/icon16.png",
+      "48": "images/icon48.png",
+      "128": "images/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  }
+}

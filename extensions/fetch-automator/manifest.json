@@ -1,0 +1,41 @@
+{
+    "manifest_version": 3,
+    "name": "Fetch CID Automator v4.0",
+    "version": "4.0.0",
+    "description": "Automates inserting CIDs and Facility IDs into fetch with enhanced reliability.",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "tabs",
+        "storage",
+        "webNavigation"
+    ],
+    "host_permissions": [
+        "https://resolve.zayo.us/*"
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/extension-v4.png",
+            "48": "images/extension-v4.png",
+            "128": "images/extension-v4.png"
+        }
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://resolve.zayo.us/*"
+            ],
+            "js": ["content.js"]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["images/*.png", "failed_items_display.html", "failed_items_display.js"],
+            "matches": ["https://resolve.zayo.us/*"]
+        }
+    ]
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFAST Demo - Example Usage</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .demo-section {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .demo-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #f48120;
+            padding-bottom: 10px;
+        }
+        
+        .demo-content {
+            background: white;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #f48120;
+        }
+        
+        .demo-code {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .demo-steps {
+            counter-reset: step-counter;
+        }
+        
+        .demo-step {
+            counter-increment: step-counter;
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .demo-step::before {
+            content: counter(step-counter);
+            background: #f48120;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+        
+        .back-to-main {
+            display: inline-block;
+            background: #f48120;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .back-to-main:hover {
+            background: #e0701a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 129, 32, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>
+                <span class="logo">🔍</span>
+                SFAST Demo
+            </h1>
+            <h2>Example Usage and Testing</h2>
+        </header>
+
+        <a href="index.html" class="back-to-main">← Back to Main Tool</a>
+
+        <div class="demo-section">
+            <h3 class="demo-title">What is SFAST?</h3>
+            <div class="demo-content">
+                <p><strong>SFAST</strong> (SalesForce Automation Search Tool) is a web application that helps you generate multiple SalesForce search URLs from a list of identifiers or data values.</p>
+                <p>Instead of manually creating search URLs one by one, you can input multiple values and generate them all at once, then open them in new browser tabs for efficient searching.</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">Example Use Cases</h3>
+            <div class="demo-content">
+                <h4>Sales Teams</h4>
+                <p>Search multiple customer records, opportunity IDs, or account numbers simultaneously.</p>
+                
+                <h4>Support Staff</h4>
+                <p>Look up multiple case numbers, ticket IDs, or customer reference numbers.</p>
+                
+                <h4>Administrators</h4>
+                <p>Process bulk operations on user accounts, system records, or configuration items.</p>
+                
+                <h4>Data Analysts</h4>
+                <p>Query large datasets by generating search URLs for multiple data points.</p>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">Sample Input Data</h3>
+            <div class="demo-content">
+                <p>Here are some examples of data you can use with SFAST:</p>
+                
+                <h4>DFIDs (Device/Equipment IDs)</h4>
+                <div class="demo-code">F12A-3456789
+ETYX/12345//XYZ
+ABC-789-456-123
+DEV-2024-001</div>
+                
+                <h4>Case Numbers</h4>
+                <div class="demo-code">CASE-001234
+CASE-001235
+CASE-001236
+CASE-001237</div>
+                
+                <h4>Account Numbers</h4>
+                <div class="demo-code">ACC-2024-001, ACC-2024-002, ACC-2024-003
+ACC-2024-004
+ACC-2024-005</div>
+                
+                <h4>Mixed Data</h4>
+                <div class="demo-code">F12A-3456789, CASE-001234, ACC-2024-001
+ETYX/12345//XYZ
+ABC-789-456-123</div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">How to Use SFAST</h3>
+            <div class="demo-steps">
+                <div class="demo-step">
+                    <strong>Prepare Your Data:</strong> Gather the identifiers or values you want to search for in SalesForce. You can use any format - DFIDs, case numbers, account numbers, etc.
+                </div>
+                
+                <div class="demo-step">
+                    <strong>Input Your Data:</strong> Copy and paste your data into the text area. You can separate values with commas, new lines, or both. SFAST will automatically parse and clean the input.
+                </div>
+                
+                <div class="demo-step">
+                    <strong>Generate URLs:</strong> Click the "Generate URLs" button. SFAST will create a table showing all the generated SalesForce search URLs.
+                </div>
+                
+                <div class="demo-step">
+                    <strong>Review Results:</strong> Check the generated URLs to ensure they're correct. Each URL will open the SalesForce search page for that specific value.
+                </div>
+                
+                <div class="demo-step">
+                    <strong>Open URLs:</strong> Use "Open All URLs" to launch all searches in new browser tabs, or click individual links to open specific searches.
+                </div>
+                
+                <div class="demo-step">
+                    <strong>Clear When Done:</strong> Use "Clear Results" to reset the tool and start fresh with new data.
+                </div>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">Keyboard Shortcuts</h3>
+            <div class="demo-content">
+                <p>Power users can use these keyboard shortcuts for faster operation:</p>
+                <ul>
+                    <li><kbd>Ctrl</kbd> + <kbd>Enter</kbd> - Generate URLs</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>K</kbd> - Focus input field</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>O</kbd> - Open all URLs</li>
+                    <li><kbd>Ctrl</kbd> + <kbd>C</kbd> - Clear results</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">Tips for Best Results</h3>
+            <div class="demo-content">
+                <ul>
+                    <li><strong>Clean Your Data:</strong> Remove any unnecessary characters or formatting before pasting</li>
+                    <li><strong>Batch Processing:</strong> Process data in batches of 50-100 items for optimal performance</li>
+                    <li><strong>URL Verification:</strong> Always verify a few generated URLs before opening all of them</li>
+                    <li><strong>Browser Tabs:</strong> Be mindful of how many tabs you open - very large numbers may slow down your browser</li>
+                    <li><strong>SalesForce Access:</strong> Ensure you have proper access to the SalesForce instance you're searching</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="demo-section">
+            <h3 class="demo-title">Try It Now!</h3>
+            <div class="demo-content">
+                <p>Ready to test SFAST? Copy one of the sample data sets above and try it in the main tool!</p>
+                <p><strong>Quick Test:</strong> Copy this sample data and paste it into the main tool:</p>
+                <div class="demo-code">F12A-3456789
+CASE-001234
+ACC-2024-001</div>
+                <p>Then click "Generate URLs" to see SFAST in action!</p>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-to-main">← Back to Main Tool</a>
+    </div>
+</body>
+</html>

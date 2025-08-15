@@ -1,0 +1,20 @@
+{
+  "name": "Business Date Calculator",
+  "short_name": "BizDateCalc",
+  "description": "Calculate future business dates with holiday awareness. Perfect for project planning and deadline calculations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%232563eb' rx='20'/><text y='.9em' font-size='60' text-anchor='middle' x='50' fill='white'>📅</text></svg>",
+      "sizes": "100x100",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "lang": "en",
+  "dir": "ltr"
+}

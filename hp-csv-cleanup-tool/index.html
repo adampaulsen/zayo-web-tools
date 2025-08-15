@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP CSV Cleanup Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container">
+        <header>
+            <h1>HP CSV Cleanup Tool</h1>
+            <p>Upload your HP CSV file to automatically clean and filter the data</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7,10 12,15 17,10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <h3>Upload CSV File</h3>
+                        <p>Drag and drop your CSV file here, or click to browse</p>
+                        <input type="file" id="fileInput" accept=".csv" multiple style="display: none;">
+                    </div>
+                </div>
+                <div class="options-section" style="margin-top: 1rem; padding: 1rem; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #374151;">Processing Options</h4>
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                        <input type="checkbox" id="excludeMicrosoft" style="width: 16px; height: 16px;">
+                        <span style="color: #374151;">Exclude Microsoft from results</span>
+                    </label>
+                </div>
+               
+                <div class="report-upload-section" style="margin-top: 1rem; padding: 1rem; background: #f0f9ff; border-radius: 8px; border: 1px solid #0ea5e9;">
+                    <h4 style="margin: 0 0 0.5rem 0; color: #0c4a6e;">FSB Report (Optional)</h4>
+                    <p style="margin: 0 0 0.5rem 0; color: #0c4a6e; font-size: 0.9rem;">Upload a report CSV to enhance Network Facility column with Service Component information</p>
+                    <div class="report-upload-area" id="reportUploadArea" style="border: 2px dashed #0ea5e9; border-radius: 6px; padding: 1rem; text-align: center; cursor: pointer; background: #f8fafc;">
+                        <div class="report-upload-content">
+                            <svg style="width: 24px; height: 24px; color: #0ea5e9; margin-bottom: 0.5rem;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7,10 12,15 17,10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            <p style="margin: 0; color: #0c4a6e;">Click to upload report CSV or drag and drop</p>
+                            <p style="margin: 0.25rem 0 0 0; font-size: 0.8rem; color: #64748b;">Expected: 9 columns with Dark Fiber ID in column B</p>
+                        </div>
+                        <input type="file" id="reportFileInput" accept=".csv" style="display: none;">
+                    </div>
+                </div>
+
+            <div class="processing-section" id="processingSection" style="display: none;">
+                <div class="progress-container">
+                    <h3>Processing your file...</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Step 1: Reading file...</p>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h3>Processing Complete!</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="download-btn" id="downloadBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7,10 12,15 17,10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download Cleaned CSV
+                        </button>
+                        <button class="download-btn" id="clearBtn" style="background: #e53e3e;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Clear Results
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Original Rows</h4>
+                        <p id="originalRows">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Filtered Rows</h4>
+                        <p id="filteredRows">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Removed Duplicates</h4>
+                        <p id="removedDuplicates">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Final Rows</h4>
+                        <p id="finalRows">0</p>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <h4>Preview of Cleaned Data</h4>
+                    <div class="table-container">
+                        <table id="previewTable">
+                            <thead id="previewHeader"></thead>
+                            <tbody id="previewBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="emptyFilesList" style="display:none; margin-top:2rem;">
+                    <h4>Files with No Matching Rows</h4>
+                    <ul id="emptyFilesUl" style="color:#e53e3e;"></ul>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3 style="cursor: pointer; display: flex; align-items: center; gap: 0.5rem;" onclick="toggleInfoSection()">
+                    <span id="infoTriangle" style="transition: transform 0.2s;">▶</span>
+                    What this tool does:
+                </h3>
+                <ul id="infoList" style="display: none; margin-top: 0.5rem;">
+                    <li>Removes the first row (header cleanup)</li>
+                    <li>Deletes columns F and G</li>
+                    <li>Normalizes data by trimming whitespace and removing tabs</li>
+                    <li>Filters for "Dark Fiber - LH" or "Dark Fiber - Metro" in column 6 (case-insensitive)</li>
+                    <li>Filters for specific companies (Google, Amazon, Meta, Microsoft, etc.) in column 7 (case-insensitive)</li>
+                    <li>Inserts a new column D with automatic Excel formulas</li>
+                    <li>Removes duplicates based on column 3</li>
+                    <li>Generates Excel-ready output with concatenation formulas</li>
+                    <li>Tracks and displays files with no matching rows</li>
+                    <li>Provides processing options (e.g., exclude Microsoft from results)</li>
+                    <li>Enhances Network Facility column with Service Component information from optional report files</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+    </script>
+</body>
+</html> 

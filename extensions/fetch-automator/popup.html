@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Search Automator</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body class="ui-state-idle"> <h3>Enter Items (one per line)</h3>
+    <textarea id="itemsList" placeholder="Paste your items here..."></textarea>
+    <div id="restoredNotification">
+        &#10004; Circuit IDs restored from previous session
+    </div>
+    <button id="startButton">Start Automation</button>
+    <button id="stopButton">Stop Automation</button>
+    <button id="viewFailedButton" style="display: none;">View Failed Items</button>
+    <div id="status">Idle.</div>
+    <script src="popup.js"></script>
+</body>
+</html>

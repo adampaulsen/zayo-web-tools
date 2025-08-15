@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DFID Lookup Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        textarea { width: 250px; height: 100px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .button-group { margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>DFID Lookup Tool</h2>
+
+    <label for="variables">DFIDs (comma or line separated):</label><br>
+    <textarea id="variables" placeholder="F21E-0170475, ETYX/086995//ZYO, etc."></textarea><br><br>
+
+    <div class="button-group">
+        <button onclick="generateTable()">Generate URLs</button>
+        <button id="openAllBtn" onclick="openAllUrls()" disabled>Open All URLs</button>
+        <button id="clearResultsBtn" onclick="clearResults()" disabled>Clear Results</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        const baseUrl = 'https://zayo.my.salesforce.com/_ui/search/ui/UnifiedSearchResults?searchType=2&str=';
+        let generatedUrls = [];
+
+        function generateTable() {
+            const variablesInput = document.getElementById('variables').value;
+
+            const variables = variablesInput
+                .split(/[\n,]+/)
+                .map(v => v.trim())
+                .filter(v => v.length > 0);
+
+            if (variables.length === 0) {
+                alert("Please enter at least one variable.");
+                return;
+            }
+
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = ""; // Clear previous results
+            generatedUrls = []; // Clear previous URLs
+
+            // Create the table
+            const table = document.createElement('table');
+
+            // Add header row
+            const headerRow = table.insertRow();
+            const headerCell = document.createElement('th');
+            headerCell.textContent = 'Generated URLs';
+            headerRow.appendChild(headerCell);
+
+            // Add a row per URL
+            variables.forEach(variable => {
+                const fullUrl = baseUrl + variable;
+                generatedUrls.push(fullUrl);
+
+                const row = table.insertCell();
+                const cell = row.insertCell();
+                const link = document.createElement('a');
+                link.href = fullUrl;
+                link.textContent = fullUrl;
+                link.target = '_blank';
+                cell.appendChild(link);
+            });
+
+            resultDiv.appendChild(table);
+            document.getElementById('openAllBtn').disabled = false;
+            document.getElementById('clearResultsBtn').disabled = false; // Enable clear results button
+        }
+
+        function openAllUrls() {
+            if (generatedUrls.length === 0) {
+                alert("No URLs to open. Please generate URLs first.");
+                return;
+            }
+
+            generatedUrls.forEach(url => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        }
+
+        function clearResults() {
+            document.getElementById('result').innerHTML = ""; // Clear the results display
+            document.getElementById('variables').value = ""; // Clear the input text box
+            generatedUrls = []; // Clear the stored URLs
+            document.getElementById('openAllBtn').disabled = true; // Disable open all button
+            document.getElementById('clearResultsBtn').disabled = true; // Disable clear results button
+        }
+    </script>
+
+</body>
+</html>

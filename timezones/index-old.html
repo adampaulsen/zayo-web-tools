@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global & US Time Zones with DST & Offset</title>
+    <style>
+        :root {
+            /* Light theme variables */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --surface-color: rgba(255, 255, 255, 0.95);
+            --surface-secondary: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            --text-primary: #333;
+            --text-heading: #2c3e50;
+            --text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --border-color: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --shadow-color-heavy: rgba(0, 0, 0, 0.15);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --bg-gradient: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            --surface-color: rgba(45, 45, 45, 0.95);
+            --surface-secondary: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+            --text-primary: #e0e0e0;
+            --text-heading: #f1f5f9;
+            --text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --border-color: rgba(255, 255, 255, 0.1);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-color-heavy: rgba(0, 0, 0, 0.4);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-gradient);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            /* Accessibility improvements */
+            outline: 2px solid transparent;
+            outline-offset: 2px;
+        }
+
+        .theme-toggle:focus {
+            outline: 2px solid var(--text-primary);
+            outline-offset: 2px;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        /* Add focus styles for time zone blocks */
+        .time-zone-block:focus-within {
+            outline: 2px solid var(--text-primary);
+            outline-offset: 2px;
+        }
+
+        /* Improve color contrast for better accessibility */
+        .offset-display {
+            font-size: 0.9em;
+            color: var(--text-primary);
+            margin-top: 10px;
+            font-weight: 600;
+            background: var(--surface-secondary);
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .dst-status {
+            font-size: 0.85em;
+            color: var(--text-primary);
+            margin-top: 10px;
+            font-weight: 500;
+            background: var(--surface-secondary);
+            padding: 4px 10px;
+            border-radius: 15px;
+            display: inline-block;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            opacity: 0.9;
+        }
+
+        /* Specific styling for the main header area offset and DST elements */
+        .header .offset-display,
+        .header .dst-status {
+            color: var(--text-heading) !important;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            margin-left: 10px;
+            margin-right: 10px;
+            /* Override the transparent text from .main-time */
+            -webkit-text-fill-color: var(--text-heading) !important;
+            background-clip: unset;
+        }
+
+        [data-theme="dark"] .header .offset-display,
+        [data-theme="dark"] .header .dst-status {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-heading) !important;
+            -webkit-text-fill-color: var(--text-heading) !important;
+        }
+
+        .dst-status:contains('Standard') {
+            color: var(--warning-color);
+            background: var(--surface-secondary);
+        }
+
+        .dst-status:contains('No DST') {
+            color: var(--text-muted);
+            background: var(--surface-secondary);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--surface-color);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px var(--shadow-color);
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .main-time {
+            font-size: 2.2em;
+            font-weight: 600;
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .conus-times-container {
+            background: var(--surface-color);
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px var(--shadow-color);
+            backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .conus-times-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2em;
+            font-weight: 600;
+            color: var(--text-heading);
+            background: var(--text-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: color 0.3s ease;
+        }
+
+        #conusTimesDisplay {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .time-zone-block {
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 25px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-zone-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--text-gradient);
+        }
+
+        .time-zone-block:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px var(--shadow-color-heavy);
+        }
+
+        .time-zone-block .zone-name {
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1.2em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .time-zone-block .time-display {
+            font-size: 1em;
+            display: block;
+            margin-bottom: 15px;
+            line-height: 1.4;
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+                margin-bottom: 30px;
+            }
+            
+            .main-time {
+                font-size: 1.8em;
+            }
+            
+            .conus-times-container {
+                padding: 30px 20px;
+            }
+            
+            .conus-times-container h2 {
+                font-size: 1.6em;
+            }
+            
+            #conusTimesDisplay {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .time-zone-block {
+                padding: 20px 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .main-time {
+                font-size: 1.5em;
+            }
+            
+            .conus-times-container h2 {
+                font-size: 1.4em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <div class="main-time" id="centralUSTimeCombined"></div>
+        </div>
+
+        <div class="conus-times-container">
+            <h2>Current Times Around the Globe & US Zones</h2>
+            <div style="margin-bottom: 20px; text-align: center;">
+                <input type="text" id="timezoneSearch" placeholder="Search time zones..." 
+                       style="padding: 10px 15px; border: 1px solid var(--border-color); border-radius: 10px; 
+                              background: var(--surface-color); color: var(--text-primary); width: 300px; max-width: 100%;">
+            </div>
+            <div id="conusTimesDisplay">
+                <div style="text-align: center; padding: 20px; color: var(--text-primary);">
+                    Loading time zones...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper function to get GMT offset string for a given timeZone
+        // This method handles DST automatically based on the 'now' date
+        function getGMTOffset(timeZone, date) {
+            const formatted = new Intl.DateTimeFormat('en-US', {
+                timeZone: timeZone,
+                timeZoneName: 'shortOffset', // e.g., "GMT-5", "GMT+5:30"
+            }).format(date);
+
+            // Extract just the offset part (e.g., "-5", "+5:30")
+            const match = formatted.match(/GMT([+-]\d{1,2}(:\d{2})?)/);
+            if (match && match[1]) {
+                return `GMT ${match[1]}`;
+            }
+            // Fallback for GMT itself, or if offset extraction fails
+            if (timeZone === 'Etc/GMT' || timeZone === 'UTC') {
+                return 'GMT+0';
+            }
+            return '';
+        }
+
+        // Helper function to infer DST status
+        function getDSTStatus(timeZone, date) {
+            // These time zones generally do NOT observe DST
+            const noDstZones = ['Etc/GMT', 'UTC', 'America/Phoenix', 'Asia/Kolkata'];
+            if (noDstZones.includes(timeZone)) {
+                return '(No DST)';
+            }
+
+            // Use 'long' timeZoneName to get "Standard Time" or "Daylight Time" / "Summer Time"
+            const formatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: timeZone,
+                timeZoneName: 'long' // e.g., "Central Standard Time", "Central Daylight Time", "Irish Summer Time"
+            });
+            const parts = formatter.formatToParts(date);
+            const timeZoneNamePart = parts.find(part => part.type === 'timeZoneName');
+
+            if (timeZoneNamePart) {
+                const longName = timeZoneNamePart.value;
+                if (longName.includes('Daylight') || longName.includes('Summer')) {
+                    return '(DST Active)';
+                } else if (longName.includes('Standard')) {
+                    return '(Standard Time)';
+                }
+            }
+            // Fallback for zones where 'long' name doesn't clearly indicate DST status
+            return '';
+        }
+
+
+        function updateTimes() {
+            try {
+                const centralUSTimeCombinedElement = document.getElementById('centralUSTimeCombined');
+                const conusTimesDisplayElement = document.getElementById('conusTimesDisplay');
+                
+                if (!centralUSTimeCombinedElement || !conusTimesDisplayElement) {
+                    console.error('Required DOM elements not found');
+                    return;
+                }
+                
+                // Only clear and rebuild if the search is empty or we're not filtering
+                const searchInput = document.getElementById('timezoneSearch');
+                const isFiltering = searchInput && searchInput.value.trim() !== '';
+                
+                if (!isFiltering) {
+                    conusTimesDisplayElement.innerHTML = ''; // Clear previous times
+                }
+
+                const now = new Date(); // Get current date/time once for all calculations
+
+            // --- Detect User's Local Time Zone ---
+            const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const centralUSTimeZoneIdentifier = 'America/Chicago';
+            const isUserCentralTime = userTimeZone === centralUSTimeZoneIdentifier ||
+                                      userTimeZone.includes('America/Indiana/Knox') ||
+                                      userTimeZone.includes('America/North_Dakota');
+
+
+            // Base options for date part
+            const dateOptions = {
+                year: 'numeric', month: 'long', day: 'numeric'
+            };
+
+            // Options for AM/PM time only (NO SECONDS)
+            const timeOptionsAMPM = {
+                hour: '2-digit', minute: '2-digit',
+                hour12: true
+            };
+
+            // Options for 24-hour time only (NO SECONDS)
+            const timeOptions24hr = {
+                hour: '2-digit', minute: '2-digit',
+                hour12: false
+            };
+
+            // --- Top Display: User's Local Time (always shows user's actual time zone) ---
+            const mainDisplayTimeZone = userTimeZone;
+            
+            // Get a more readable name for the user's local time zone
+            const userTimeZoneNameFormatter = new Intl.DateTimeFormat('en-US', {
+                timeZone: userTimeZone,
+                timeZoneName: 'long'
+            });
+            const userLongTimeZoneName = userTimeZoneNameFormatter.formatToParts(now)
+                                            .find(part => part.type === 'timeZoneName')?.value || userTimeZone;
+
+            // Determine a short, descriptive label for "Your Local Time"
+            let mainDisplayLabel = "Your Local Time";
+            if (userLongTimeZoneName.includes('Central')) {
+                mainDisplayLabel += " (Central)";
+            } else if (userLongTimeZoneName.includes('Pacific')) {
+                mainDisplayLabel += " (Pacific)";
+            } else if (userLongTimeZoneName.includes('Eastern')) {
+                mainDisplayLabel += " (Eastern)";
+            } else if (userLongTimeZoneName.includes('Mountain')) {
+                mainDisplayLabel += " (Mountain)";
+            } else if (userLongTimeZoneName.includes('Alaska')) {
+                mainDisplayLabel += " (Alaska)";
+            } else if (userLongTimeZoneName.includes('Atlantic')) {
+                mainDisplayLabel += " (Atlantic)";
+            } else if (userLongTimeZoneName.includes('Irish')) {
+                mainDisplayLabel += " (Irish)";
+            } else if (userLongTimeZoneName.includes('India')) {
+                mainDisplayLabel += " (India)";
+            } else if (userLongTimeZoneName.includes('Central European')) { // Added for Central European
+                mainDisplayLabel += " (Central European)";
+            }
+            else if (userLongTimeZoneName.includes('Greenwich')) {
+                mainDisplayLabel += " (GMT)";
+            } else {
+                // Fallback for other less common zones, try to extract city/region name
+                const parts = userTimeZone.split('/');
+                mainDisplayLabel += ` (${parts[parts.length - 1].replace(/_/g, ' ')})`;
+            }
+
+            const mainDateOptions = { ...dateOptions, timeZone: mainDisplayTimeZone };
+            const mainTimeAMPMOptions = { ...timeOptionsAMPM, timeZone: mainDisplayTimeZone };
+            const mainTime24hrOptions = { ...timeOptions24hr, timeZone: mainDisplayTimeZone };
+
+            const mainFormattedDate = now.toLocaleString('en-US', mainDateOptions);
+            const mainFormattedTimeAMPM = now.toLocaleString('en-US', mainTimeAMPMOptions);
+            const mainFormattedTime24hr = now.toLocaleString('en-US', mainTime24hrOptions);
+            const mainGMTOffset = getGMTOffset(mainDisplayTimeZone, now);
+            const mainDSTStatus = getDSTStatus(mainDisplayTimeZone, now);
+
+            centralUSTimeCombinedElement.innerHTML =
+                `${mainDisplayLabel}: ${mainFormattedDate} ${mainFormattedTimeAMPM} (${mainFormattedTime24hr}) <span class="offset-display">${mainGMTOffset}</span> <span class="dst-status">${mainDSTStatus}</span>`;
+
+
+            // --- Time Zones Display (Global and US zones) ---
+            const allTimeZones = [
+                // Global zones
+                { name: 'GMT/UTC', timeZone: 'Etc/GMT' },
+                { name: 'London (GMT/BST)', timeZone: 'Europe/London' },
+                { name: 'Dublin (IST)', timeZone: 'Europe/Dublin' },
+                { name: 'Berlin (CET/CEST)', timeZone: 'Europe/Berlin' },
+                { name: 'Paris (CET/CEST)', timeZone: 'Europe/Paris' },
+                { name: 'Moscow (MSK)', timeZone: 'Europe/Moscow' },
+                { name: 'Tokyo (JST)', timeZone: 'Asia/Tokyo' },
+                { name: 'Beijing (CST)', timeZone: 'Asia/Shanghai' },
+                { name: 'Singapore (SGT)', timeZone: 'Asia/Singapore' },
+                { name: 'India (IST)', timeZone: 'Asia/Kolkata' },
+                { name: 'Sydney (AEST/AEDT)', timeZone: 'Australia/Sydney' },
+                { name: 'Auckland (NZST/NZDT)', timeZone: 'Pacific/Auckland' },
+                
+                // US zones
+                { name: 'Alaska (AKST/AKDT)', timeZone: 'America/Anchorage' },
+                { name: 'Pacific (PST/PDT)', timeZone: 'America/Los_Angeles' },
+                { name: 'Arizona (MST)', timeZone: 'America/Phoenix' },
+                { name: 'Mountain (MST/MDT)', timeZone: 'America/Denver' },
+                { name: 'Central (CST/CDT)', timeZone: 'America/Chicago' },
+                { name: 'Eastern (EST/EDT)', timeZone: 'America/New_York' },
+                { name: 'Atlantic (AST/ADT)', timeZone: 'America/Halifax' },
+                { name: 'Newfoundland (NST/NDT)', timeZone: 'America/St_Johns' }
+            ];
+
+            allTimeZones.forEach(zone => {
+                const zoneDateOptions = { ...dateOptions, timeZone: zone.timeZone };
+                const zoneTimeAMPMOptions = { ...timeOptionsAMPM, timeZone: zone.timeZone };
+                const zoneTime24hrOptions = { ...timeOptions24hr, timeZone: zone.timeZone };
+
+                const formattedDate = now.toLocaleString('en-US', zoneDateOptions);
+                const formattedTimeAMPM = now.toLocaleString('en-US', zoneTimeAMPMOptions);
+                const formattedTime24hr = now.toLocaleString('en-US', zoneTime24hrOptions);
+                const gmtOffset = getGMTOffset(zone.timeZone, now);
+                const dstStatus = getDSTStatus(zone.timeZone, now);
+
+                const div = document.createElement('div');
+                div.classList.add('time-zone-block');
+                div.innerHTML = `
+                    <span class="zone-name">${zone.name}</span>
+                    <span class="time-display">
+                        ${formattedDate}<br>${formattedTimeAMPM} (${formattedTime24hr})
+                    </span>
+                    <span class="offset-display">${gmtOffset}</span>
+                    <span class="dst-status">${dstStatus}</span>
+                    <button onclick="copyTimeZone('${zone.name}', '${formattedDate} ${formattedTimeAMPM} (${formattedTime24hr}) ${gmtOffset}')" 
+                            style="margin-top: 10px; padding: 5px 10px; background: var(--text-gradient); color: white; 
+                                   border: none; border-radius: 5px; cursor: pointer; font-size: 0.8em;">
+                        Copy
+                    </button>
+                `;
+                conusTimesDisplayElement.appendChild(div);
+            });
+            } catch (error) {
+                console.error('Error updating times:', error);
+                const conusTimesDisplayElement = document.getElementById('conusTimesDisplay');
+                if (conusTimesDisplayElement) {
+                    conusTimesDisplayElement.innerHTML = '<div style="text-align: center; padding: 20px; color: red;">Error loading time zones. Please refresh the page.</div>';
+                }
+            }
+        }
+
+        // Search functionality
+        document.getElementById('timezoneSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const timeZoneBlocks = document.querySelectorAll('.time-zone-block');
+            
+            timeZoneBlocks.forEach(block => {
+                const zoneName = block.querySelector('.zone-name').textContent.toLowerCase();
+                if (zoneName.includes(searchTerm)) {
+                    block.style.display = 'block';
+                } else {
+                    block.style.display = 'none';
+                }
+            });
+        });
+
+        // Copy to clipboard functionality
+        function copyTimeZone(zoneName, timeInfo) {
+            const textToCopy = `${zoneName}: ${timeInfo}`;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Show a brief success message
+                const button = event.target;
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--surface-secondary)';
+                button.style.color = 'var(--text-primary)';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--text-gradient)';
+                    button.style.color = 'white';
+                }, 1000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        // Update times immediately on page load
+        updateTimes();
+        setInterval(updateTimes, 1000);
+    </script>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+    </script>
+</body>
+</html>

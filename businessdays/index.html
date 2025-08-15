@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Calculate future business dates with holiday awareness. Perfect for project planning and deadline calculations.">
+    <meta name="keywords" content="business days, date calculator, project planning, deadline calculator">
+    <meta name="author" content="Business Date Calculator">
+    
+    <title>Business Date Calculator - Future Business Days with Holiday Awareness</title>
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="script.js" as="script">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+        🌙
+    </button>
+
+    <header class="header">
+        <h1>Business Date Calculator</h1>
+        <p class="subtitle">Calculate future business dates with holiday awareness</p>
+    </header>
+
+        <main class="main-content">
+        <section class="quick-calculator-section" aria-labelledby="quick-calc-title">
+            <h2 id="quick-calc-title">Quick Calculations from Today</h2>
+            <p class="current-date-display">Today is: <strong id="currentDateDisplay"></strong></p>
+            <div class="quick-calc-grid">
+                <div class="quick-calc-item">
+                    <h3>5 Business Days</h3>
+                    <p class="quick-result" id="quick5Days"></p>
+                </div>
+                <div class="quick-calc-item">
+                    <h3>10 Business Days</h3>
+                    <p class="quick-result" id="quick10Days"></p>
+                </div>
+                <div class="quick-calc-item">
+                    <h3>15 Business Days</h3>
+                    <p class="quick-result" id="quick15Days"></p>
+                </div>
+                <div class="quick-calc-item">
+                    <h3>20 Business Days</h3>
+                    <p class="quick-result" id="quick20Days"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="calculator-section" aria-labelledby="calculator-title">
+            <h2 id="calculator-title">Custom Date Calculator</h2>
+            
+            <div class="input-group">
+                <label for="startDate">Start Date:</label>
+                <input type="date" id="startDate" aria-describedby="startDateHelp">
+                <small id="startDateHelp">Select the starting date for your calculation</small>
+            </div>
+
+            <div class="input-group">
+                <label for="businessDays">Business Days to Add:</label>
+                <input type="number" id="businessDays" min="1" max="365" value="5" aria-describedby="businessDaysHelp">
+                <small id="businessDaysHelp">Enter the number of business days to add (1-365)</small>
+            </div>
+
+            <div class="button-group">
+                <button type="button" id="calculateBtn" class="btn btn-primary">
+                    <span class="btn-text">Calculate</span>
+                    <span class="btn-loading" hidden>Calculating...</span>
+                </button>
+                <button type="button" id="resetBtn" class="btn btn-secondary">Reset</button>
+            </div>
+
+            <div class="result-section" id="resultSection" hidden>
+                <h3>Results</h3>
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-label">Start Date:</span>
+                        <span class="result-value" id="displayStartDate"></span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Business Days Added:</span>
+                        <span class="result-value" id="displayBusinessDays"></span>
+                        </div>
+                    <div class="result-item result-highlight">
+                        <span class="result-label">Result Date:</span>
+                        <span class="result-value" id="displayResultDate"></span>
+                    </div>
+                </div>
+                <button type="button" id="copyBtn" class="btn btn-outline">📋 Copy Result</button>
+            </div>
+        </section>
+
+        <section class="info-section" aria-labelledby="info-title">
+            <h2 id="info-title">About Business Days</h2>
+            <div class="info-content">
+                <p>Business days exclude weekends (Saturday and Sunday) and major US federal holidays. This calculator automatically adjusts for:</p>
+                <ul>
+                    <li>New Year's Day</li>
+                    <li>Martin Luther King Jr. Day</li>
+                    <li>Presidents' Day</li>
+                    <li>Memorial Day</li>
+                    <li>Independence Day</li>
+                    <li>Labor Day</li>
+                    <li>Columbus Day</li>
+                    <li>Veterans Day</li>
+                    <li>Thanksgiving Day</li>
+                    <li>Christmas Day</li>
+                </ul>
+                <div class="weekend-note">
+                    <h3>Weekend & Holiday Handling</h3>
+                    <p><strong>Smart Start Date:</strong> If you select a weekend or holiday as your start date, the calculator automatically uses the next business day instead. This ensures your calculations always start from a valid business day.</p>
+                    <p><strong>Example:</strong> If today is Saturday and you want "5 business days from today," the tool will calculate from Monday (the next business day) and give you the result for Friday.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2024 Business Date Calculator. Built with modern web standards.</p>
+    </footer>
+
+    <!-- Toast notification -->
+    <div id="toast" class="toast" role="alert" aria-live="polite" hidden></div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SFAST - SalesForce Automation Search Tool for generating and managing SalesForce search URLs">
+    <meta name="keywords" content="SalesForce, automation, search, tool, SFAST">
+    <meta name="author" content="SFAST Team">
+    
+    <title>SFAST - SalesForce Automation Search Tool</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="script.js" as="script">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container" role="main">
+        <!-- Header Section -->
+        <header>
+            <h1>
+                <span class="logo">🔍</span>
+                SFAST
+            </h1>
+            <h2>SalesForce Automation Search Tool</h2>
+        </header>
+
+        <!-- Main Form Section -->
+        <main>
+            <form id="searchForm" novalidate>
+                <div class="input-group">
+                    <label for="variables" id="variables-label">
+                        DFIDs or any data (comma or line separated):
+                    </label>
+                    <textarea 
+                        id="variables" 
+                        name="variables"
+                        placeholder="F12A-3456789, ETYX/12345//XYZ, etc."
+                        aria-labelledby="variables-label"
+                        aria-describedby="input-help"
+                        aria-required="true"
+                        required
+                    ></textarea>
+                    <div id="input-help" class="help-text" aria-live="polite">
+                        Enter multiple values separated by commas or new lines. Each value will generate a unique SalesForce search URL.
+                    </div>
+                    <div class="error-message" role="alert" aria-live="assertive"></div>
+                </div>
+
+                <!-- Button Group -->
+                <div class="button-group" role="group" aria-label="Action buttons">
+                    <button 
+                        type="button" 
+                        id="generateBtn" 
+                        class="primary-btn"
+                        aria-describedby="generate-help"
+                        disabled
+                    >
+                        <span class="btn-text">Generate URLs</span>
+                        <span class="btn-loading" aria-hidden="true">Processing...</span>
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        id="openAllBtn" 
+                        class="secondary-btn"
+                        aria-describedby="open-all-help"
+                        disabled
+                    >
+                        <span class="btn-text">Open All URLs</span>
+                        <span class="btn-loading" aria-hidden="true">Opening...</span>
+                    </button>
+                    
+                    <button 
+                        type="button" 
+                        id="clearResultsBtn" 
+                        class="secondary-btn"
+                        aria-describedby="clear-help"
+                        disabled
+                    >
+                        <span class="btn-text">Clear Results</span>
+                    </button>
+                </div>
+
+                <!-- Button Help Text -->
+                <div class="button-help" aria-live="polite">
+                    <div id="generate-help" class="help-item">
+                        <strong>Generate URLs:</strong> Creates SalesForce search URLs for each input value
+                    </div>
+                    <div id="open-all-help" class="help-item">
+                        <strong>Open All URLs:</strong> Opens all generated URLs in new browser tabs
+                    </div>
+                    <div id="clear-help" class="help-item">
+                        <strong>Clear Results:</strong> Removes all generated URLs and clears input
+                    </div>
+                </div>
+            </form>
+        </main>
+
+        <!-- Results Section -->
+        <section id="result" aria-live="polite" aria-label="Generated URLs results"></section>
+
+        <!-- Success Messages -->
+        <div class="success-message" role="status" aria-live="polite"></div>
+
+        <!-- Keyboard Shortcuts Help -->
+        <details class="keyboard-help">
+            <summary>Keyboard Shortcuts</summary>
+            <div class="shortcuts-list">
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>Enter</kbd> - Generate URLs
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>K</kbd> - Focus input field
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>O</kbd> - Open all URLs
+                </div>
+                <div class="shortcut-item">
+                    <kbd>Ctrl</kbd> + <kbd>C</kbd> - Clear results
+                </div>
+            </div>
+        </details>
+    </div>
+
+    <!-- External JavaScript -->
+    <script src="script.js"></script>
+    
+    <!-- Fallback for JavaScript disabled -->
+    <noscript>
+        <div style="text-align: center; padding: 20px; background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px; margin: 20px;">
+            <strong>JavaScript Required:</strong> This application requires JavaScript to function. Please enable JavaScript in your browser.
+        </div>
+    </noscript>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+    </script>
+</body>
+</html>

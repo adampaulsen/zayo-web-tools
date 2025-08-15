@@ -1,0 +1,197 @@
+/* Theme toggle button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-gradient);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.3s ease;
+    z-index: 1000;
+    /* Accessibility improvements */
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+.theme-toggle:focus {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px var(--shadow-color);
+}
+
+/* Container and layout */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header section */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    background: var(--surface-color);
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px var(--shadow-color);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.main-time {
+    font-size: 2.2em;
+    font-weight: 600;
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+/* Main content container */
+.conus-times-container {
+    background: var(--surface-color);
+    border-radius: 20px;
+    padding: 40px 30px;
+    box-shadow: 0 20px 40px var(--shadow-color);
+    backdrop-filter: blur(10px);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.conus-times-container h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    font-weight: 600;
+    color: var(--text-heading);
+    background: var(--text-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    transition: color 0.3s ease;
+}
+
+
+
+/* Time zone grid */
+#conusTimesDisplay {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+}
+
+/* Individual time zone blocks */
+.time-zone-block {
+    background: var(--surface-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 25px 20px;
+    text-align: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 25px var(--shadow-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.time-zone-block::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--text-gradient);
+}
+
+.time-zone-block:hover {
+    box-shadow: 0 15px 35px var(--shadow-color-heavy);
+}
+
+.time-zone-block:focus-within {
+    outline: 2px solid var(--text-primary);
+    outline-offset: 2px;
+}
+
+.time-zone-block .zone-name {
+    font-weight: 700;
+    color: var(--text-heading);
+    margin-bottom: 15px;
+    display: block;
+    font-size: 1.2em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.time-zone-block .time-display {
+    font-size: 1em;
+    display: block;
+    margin-bottom: 15px;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+/* Offset and DST status displays */
+.offset-display {
+    font-size: 0.9em;
+    color: var(--text-primary);
+    margin-top: 10px;
+    font-weight: 600;
+    background: var(--surface-secondary);
+    padding: 5px 12px;
+    border-radius: 20px;
+    display: inline-block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    opacity: 0.8;
+}
+
+.dst-status {
+    font-size: 0.85em;
+    color: var(--text-primary);
+    margin-top: 10px;
+    font-weight: 500;
+    background: var(--surface-secondary);
+    padding: 4px 10px;
+    border-radius: 15px;
+    display: inline-block;
+    transition: color 0.3s ease, background-color 0.3s ease;
+    opacity: 0.9;
+}
+
+/* Specific styling for the main header area offset and DST elements */
+.header .offset-display,
+.header .dst-status {
+    color: var(--text-heading) !important;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-left: 10px;
+    margin-right: 10px;
+    /* Override the transparent text from .main-time */
+    -webkit-text-fill-color: var(--text-heading) !important;
+    background-clip: unset;
+}
+
+[data-theme="dark"] .header .offset-display,
+[data-theme="dark"] .header .dst-status {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-heading) !important;
+    -webkit-text-fill-color: var(--text-heading) !important;
+}
+
+

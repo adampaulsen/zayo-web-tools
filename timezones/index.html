@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global & US Time Zones with DST & Offset</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <div class="main-time" id="centralUSTimeCombined"></div>
+        </div>
+
+        <div class="conus-times-container">
+            <h2>Current Times Around the Globe & US Zones</h2>
+            <div id="conusTimesDisplay"></div>
+        </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="data/timezones.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/timezone.js"></script>
+    <script src="js/ui.js"></script>
+    
+    <!-- Initialize the application -->
+    <script>
+        // Initialize everything when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initUI();
+            initTimezoneDisplay();
+        });
+    </script>
+</body>
+</html>

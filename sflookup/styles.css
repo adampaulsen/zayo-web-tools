@@ -1,0 +1,592 @@
+/* CSS Custom Properties */
+:root {
+    /* Light theme variables */
+    --bg-gradient: linear-gradient(135deg, #f48120 0%, #e0701a 100%);
+    --surface-color: #ffffff;
+    --text-primary: #2c3e50;
+    --text-secondary: #7f8c8d;
+    --text-muted: #95a5a6;
+    --border-color: #e0e0e0;
+    --border-focus: #f48120;
+    --shadow-color: rgba(0, 0, 0, 0.15);
+    --shadow-color-light: rgba(0, 0, 0, 0.1);
+    --shadow-color-heavy: rgba(0, 0, 0, 0.2);
+    --accent-gradient: linear-gradient(90deg, #f48120, #e0701a, #f48120);
+    --button-primary: #f48120;
+    --button-primary-hover: #e0701a;
+    --button-secondary: #95a5a6;
+    --button-secondary-hover: #7f8c8d;
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables */
+    --bg-gradient: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    --surface-color: #2d2d2d;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    --border-color: #4a4a4a;
+    --border-focus: #f48120;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-color-light: rgba(0, 0, 0, 0.2);
+    --shadow-color-heavy: rgba(0, 0, 0, 0.4);
+    --accent-gradient: linear-gradient(90deg, #f48120, #e0701a, #f48120);
+    --button-primary: #f48120;
+    --button-primary-hover: #e0701a;
+    --button-secondary: #64748b;
+    --button-secondary-hover: #475569;
+}
+
+/* Reset and base styles */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+    transition: background 0.3s ease;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: var(--bg-gradient);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px var(--shadow-color);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px var(--shadow-color);
+}
+
+.container {
+    background-color: var(--surface-color);
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px var(--shadow-color);
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent-gradient);
+}
+
+/* Header Styles */
+header {
+    margin-bottom: 30px;
+}
+
+h1 {
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-size: 3rem;
+    font-weight: 800;
+    text-shadow: 0 2px 4px var(--shadow-color-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    transition: color 0.3s ease;
+}
+
+.logo {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 2px 4px var(--shadow-color-light));
+}
+
+h2 {
+    color: var(--text-secondary);
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 1.3rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+/* Main Content */
+main {
+    margin-bottom: 30px;
+}
+
+.input-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+label {
+    font-size: 1.1em;
+    color: var(--text-primary);
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 16px;
+    margin-bottom: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    resize: vertical;
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    background-color: var(--surface-color);
+    box-shadow: 0 0 0 3px var(--shadow-color);
+}
+
+textarea.error {
+    border-color: var(--error-color);
+    background-color: var(--surface-secondary);
+}
+
+.help-text {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    font-style: italic;
+}
+
+.error-message {
+    color: var(--error-color);
+    font-size: 0.9em;
+    margin-top: -15px;
+    margin-bottom: 15px;
+    text-align: left;
+    display: none;
+    padding: 8px 12px;
+    background-color: var(--surface-secondary);
+    border: 1px solid var(--error-color);
+    border-radius: 4px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.button-group {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+button {
+    background: linear-gradient(135deg, #f48120 0%, #e0701a 100%);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    min-width: 120px;
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+button:hover:not(:disabled)::before {
+    left: 100%;
+}
+
+button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(244, 129, 32, 0.4);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 129, 32, 0.3);
+}
+
+/* Button variants */
+.primary-btn {
+    background: linear-gradient(135deg, #f48120 0%, #e0701a 100%);
+}
+
+.secondary-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+}
+
+.secondary-btn:hover:not(:disabled) {
+    box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* Button loading states */
+.loading {
+    position: relative;
+    color: transparent;
+}
+
+.loading .btn-text {
+    opacity: 0;
+}
+
+.loading .btn-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    color: white;
+}
+
+.btn-loading {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #ffffff;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Button help text */
+.button-help {
+    margin-top: 20px;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.help-item {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    padding: 8px 12px;
+    background-color: var(--surface-secondary);
+    border-radius: 4px;
+    border-left: 3px solid var(--accent-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Keyboard shortcuts */
+.keyboard-help {
+    margin-top: 30px;
+    text-align: left;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.keyboard-help summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 10px;
+    background-color: var(--surface-secondary);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    user-select: none;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.keyboard-help summary:hover {
+    background-color: var(--surface-color);
+}
+
+.keyboard-help summary:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(244, 129, 32, 0.3);
+}
+
+.shortcuts-list {
+    margin-top: 15px;
+    padding: 15px;
+    background-color: var(--surface-secondary);
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.shortcut-item {
+    margin-bottom: 10px;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    transition: color 0.3s ease;
+}
+
+kbd {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    box-shadow: 0 1px 0 var(--shadow-color);
+    color: var(--text-primary);
+    display: inline-block;
+    font-size: 0.85em;
+    line-height: 1.4;
+    margin: 0 0.1em;
+    padding: 0.1em 0.6em;
+    white-space: nowrap;
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 30px;
+    background-color: var(--surface-color);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px var(--shadow-color);
+    border: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+th, td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+    transition: border-color 0.3s ease;
+}
+
+th {
+    background: var(--accent-gradient);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9em;
+}
+
+tr:hover {
+    background-color: var(--surface-secondary);
+    transition: background-color 0.3s ease;
+}
+
+td a {
+    color: #3498db;
+    text-decoration: none;
+    word-break: break-all;
+    transition: color 0.3s ease;
+}
+
+td a:hover {
+    color: #2980b9;
+    text-decoration: underline;
+}
+
+td a:focus {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+}
+
+#result {
+    margin-top: 25px;
+}
+
+.success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #c3e6cb;
+    display: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 25px 20px;
+        border-radius: 12px;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 1.1rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    button {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    textarea {
+        height: 100px;
+    }
+    
+    .keyboard-help {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    h2 {
+        font-size: 1rem;
+    }
+    
+    .logo {
+        font-size: 2rem;
+    }
+    
+    .button-help {
+        margin-top: 15px;
+    }
+    
+    .shortcuts-list {
+        padding: 10px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    body {
+        background: #000000;
+    }
+    
+    .container {
+        background-color: #ffffff;
+        border: 2px solid #000000;
+    }
+    
+    button {
+        border: 2px solid #000000;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    button::before {
+        display: none;
+    }
+    
+    button:hover:not(:disabled) {
+        transform: none;
+    }
+    
+    .loading::after {
+        animation: none;
+    }
+}
+
+/* Print styles */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+    
+    .container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+    
+    .button-group,
+    .keyboard-help,
+    .button-help {
+        display: none;
+    }
+    
+    table {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}

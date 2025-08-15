@@ -1,0 +1,71 @@
+/* Responsive Design */
+
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .header {
+        padding: 30px 20px;
+        margin-bottom: 30px;
+    }
+    
+    .main-time {
+        font-size: 1.8em;
+    }
+    
+    .conus-times-container {
+        padding: 30px 20px;
+    }
+    
+    .conus-times-container h2 {
+        font-size: 1.6em;
+    }
+    
+    #conusTimesDisplay {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .time-zone-block {
+        padding: 20px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-time {
+        font-size: 1.5em;
+    }
+    
+    .conus-times-container h2 {
+        font-size: 1.4em;
+    }
+    
+    .theme-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+    
+    .header {
+        padding: 25px 15px;
+    }
+    
+    .conus-times-container {
+        padding: 25px 15px;
+    }
+}
+
+@media (max-width: 360px) {
+    .main-time {
+        font-size: 1.3em;
+    }
+    
+    .conus-times-container h2 {
+        font-size: 1.2em;
+    }
+    
+    .time-zone-block .zone-name {
+        font-size: 1.1em;
+    }
+}

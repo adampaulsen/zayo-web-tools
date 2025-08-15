@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced List Comparator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            /* Light theme variables */
+            --bg-primary: #667eea;
+            --bg-secondary: #764ba2;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-gradient-hover: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+            --surface-color: white;
+            --surface-secondary: #f8f9fa;
+            --text-primary: #333;
+            --text-secondary: #495057;
+            --text-muted: #6c757d;
+            --border-color: #e9ecef;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --shadow-color-heavy: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --bg-primary: #4a5568;
+            --bg-secondary: #2d3748;
+            --bg-gradient: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+            --bg-gradient-hover: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            --surface-color: #2d2d2d;
+            --surface-secondary: #3a3a3a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #4a4a4a;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --shadow-color-heavy: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--bg-gradient);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--surface-color);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px var(--shadow-color-heavy);
+            overflow: hidden;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            background: var(--bg-gradient);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .options-bar {
+            background: var(--surface-secondary);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-group label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--bg-primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .input-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .input-panel {
+            background: var(--surface-secondary);
+            border-radius: 12px;
+            padding: 25px;
+            border: 2px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .input-panel:hover {
+            border-color: var(--bg-primary);
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+
+        .input-panel#referencePanel {
+            border-color: var(--bg-secondary);
+            background: linear-gradient(135deg, var(--surface-secondary) 0%, var(--surface-color) 100%);
+        }
+
+        .input-panel#referencePanel:hover {
+            border-color: var(--bg-primary);
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+
+        .input-panel h2 {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .input-panel h2 i {
+            color: var(--bg-primary);
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--surface-color);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--bg-primary);
+            background: var(--surface-secondary);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--bg-primary);
+            background: var(--surface-secondary);
+        }
+
+        .file-upload-area i {
+            font-size: 2rem;
+            color: var(--bg-primary);
+            margin-bottom: 10px;
+        }
+
+        .file-info {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            transition: color 0.3s ease;
+        }
+
+        .input-tabs {
+            display: flex;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .tab-button.active {
+            color: var(--bg-primary);
+            border-bottom-color: var(--bg-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+            transition: border-color 0.3s ease;
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--bg-primary);
+            box-shadow: 0 0 0 3px var(--shadow-color);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .result-box {
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .result-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+
+        .result-box:nth-child(5) {
+            border-left: 4px solid var(--bg-secondary);
+        }
+
+        .result-box:nth-child(5) h3 i {
+            color: var(--bg-secondary);
+        }
+
+        .result-box h3 {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--border-color);
+            transition: color 0.3s ease;
+        }
+
+        .result-count {
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .result-box:nth-child(5) .result-count {
+            background: var(--bg-secondary);
+        }
+
+        .result-content {
+            max-height: 300px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .result-content.empty {
+            color: var(--text-muted);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .result-item {
+            padding: 8px 12px;
+            margin: 4px 0;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+            word-break: break-word;
+        }
+
+        .export-options {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .export-options h3 {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .explanation-section {
+            background: var(--surface-secondary);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+            border: 1px solid var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .explanation-section h3 {
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .explanation-section h3 i {
+            color: var(--bg-primary);
+            margin-right: 10px;
+        }
+
+        .explanation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .explanation-card {
+            background: var(--surface-color);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px var(--shadow-color);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .explanation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow-color);
+            border-color: var(--bg-primary);
+        }
+
+        .explanation-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            transition: border-color 0.3s ease;
+        }
+
+        .explanation-header i {
+            font-size: 1.8rem;
+            color: var(--bg-primary);
+            width: 40px;
+            text-align: center;
+        }
+
+        .explanation-header h4 {
+            color: var(--text-secondary);
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .explanation-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 18px;
+            font-size: 1rem;
+            flex: 1;
+            transition: color 0.3s ease;
+        }
+
+        .example {
+            background: var(--surface-secondary);
+            border-left: 3px solid var(--bg-primary);
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border-radius: 0 6px 6px 0;
+            transition: background-color 0.3s ease;
+        }
+
+        .example strong {
+            color: #495057;
+        }
+
+
+
+
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .input-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .results-section {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .options-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .option-group {
+                justify-content: space-between;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .export-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .explanation-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .explanation-card {
+                text-align: center;
+            }
+
+            .explanation-header {
+                justify-content: center;
+            }
+
+            .explanation-section {
+                padding: 20px;
+                margin-top: 20px;
+            }
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-balance-scale"></i> Advanced List Comparator</h1>
+            <p>Compare, analyze, and merge lists with powerful set operations</p>
+        </div>
+        
+        <div class="content">
+            <div class="options-bar">
+                <div class="option-group">
+                    <label for="caseSensitive">Case Sensitive:</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="caseSensitive">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label for="trimWhitespace">Trim Whitespace:</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="trimWhitespace" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label for="ignoreEmpty">Ignore Empty Lines:</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="ignoreEmpty" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label for="enableNOR" title="NOR function shows items that are NOT in either List A or List B, compared against a reference set">
+                        Enable NOR Function: <i class="fas fa-info-circle" style="color: var(--text-muted); font-size: 0.9rem;"></i>
+                    </label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="enableNOR">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="input-section">
+                <div class="input-panel">
+                    <h2><i class="fas fa-list"></i> List A</h2>
+                    
+                    <div class="file-upload-area" id="fileUploadA" onclick="document.getElementById('fileInputA').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Click to upload file</strong> or drag and drop</p>
+                        <p class="file-info">Supports: .txt, .csv</p>
+                        <input type="file" id="fileInputA" accept=".txt,.csv" style="display: none;" onchange="handleFileUpload('A', this)">
+                    </div>
+
+                    <div class="input-tabs">
+                        <button class="tab-button active" onclick="switchTab('A', 'text')">Text Input</button>
+                        <button class="tab-button" onclick="switchTab('A', 'file')">File Content</button>
+                    </div>
+
+                    <div class="tab-content active" id="textTabA">
+                        <textarea id="listAInput" placeholder="Enter items for List A, one per line&#10;Or use the file upload above"></textarea>
+                    </div>
+                    <div class="tab-content" id="fileTabA">
+                        <div id="fileContentA" class="result-content empty">No file uploaded</div>
+                    </div>
+                </div>
+
+                <div class="input-panel">
+                    <h2><i class="fas fa-list"></i> List B</h2>
+                    
+                    <div class="file-upload-area" id="fileUploadB" onclick="document.getElementById('fileInputB').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Click to upload file</strong> or drag and drop</p>
+                        <p class="file-info">Supports: .txt, .csv</p>
+                        <input type="file" id="fileInputB" accept=".txt,.csv" style="display: none;" onchange="handleFileUpload('B', this)">
+                    </div>
+
+                    <div class="input-tabs">
+                        <button class="tab-button active" onclick="switchTab('B', 'text')">Text Input</button>
+                        <button class="tab-button" onclick="switchTab('B', 'file')">File Content</button>
+                    </div>
+
+                    <div class="tab-content active" id="textTabB">
+                        <textarea id="listBInput" placeholder="Enter items for List B, one per line&#10;Or use the file upload above"></textarea>
+                    </div>
+                    <div class="tab-content" id="fileTabB">
+                        <div id="fileContentB" class="result-content empty">No file uploaded</div>
+                    </div>
+                </div>
+
+                <div class="input-panel" id="referencePanel" style="display: none;">
+                    <h2><i class="fas fa-globe"></i> Reference Set (for NOR)</h2>
+                    <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;">
+                        Define a universe of items to calculate NOR operation. Items in this set that are NOT in A or B will appear in NOR results.
+                    </p>
+                    
+                    <div class="file-upload-area" id="fileUploadRef" onclick="document.getElementById('fileInputRef').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p><strong>Click to upload reference file</strong> or drag and drop</p>
+                        <p class="file-info">Supports: .txt, .csv</p>
+                        <input type="file" id="fileInputRef" accept=".txt,.csv" style="display: none;" onchange="handleFileUpload('Ref', this)">
+                    </div>
+
+                    <div class="input-tabs">
+                        <button class="tab-button active" onclick="switchTab('Ref', 'text')">Text Input</button>
+                        <button class="tab-button" onclick="switchTab('Ref', 'file')">File Content</button>
+                    </div>
+
+                    <div class="tab-content active" id="textTabRef">
+                        <textarea id="referenceInput" placeholder="Enter reference items, one per line&#10;These items will be used to calculate NOR operation"></textarea>
+                    </div>
+                    <div class="tab-content" id="fileTabRef">
+                        <div id="fileContentRef" class="result-content empty">No file uploaded</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary" onclick="compareLists()" id="compareBtn">
+                    <i class="fas fa-play"></i> Compare Lists
+                </button>
+                <button class="btn btn-secondary" onclick="clearAll()">
+                    <i class="fas fa-eraser"></i> Clear All
+                </button>
+                <button class="btn btn-success" onclick="swapLists()">
+                    <i class="fas fa-exchange-alt"></i> Swap Lists
+                </button>
+            </div>
+
+            <div class="results-section">
+                <div class="result-box">
+                    <h3>
+                        <i class="fas fa-minus-circle"></i> A Only
+                        <span class="result-count" id="aOnlyCount">0</span>
+                    </h3>
+                    <div class="result-content" id="aOnlyResults">
+                        <div class="empty">No comparison performed yet</div>
+                    </div>
+                </div>
+                <div class="result-box">
+                    <h3>
+                        <i class="fas fa-intersection"></i> A & B (Intersection)
+                        <span class="result-count" id="aAndBCount">0</span>
+                    </h3>
+                    <div class="result-content" id="aAndBResults">
+                        <div class="empty">No comparison performed yet</div>
+                    </div>
+                </div>
+                <div class="result-box">
+                    <h3>
+                        <i class="fas fa-minus-circle"></i> B Only
+                        <span class="result-count" id="bOnlyCount">0</span>
+                    </h3>
+                    <div class="result-content" id="bOnlyResults">
+                        <div class="empty">No comparison performed yet</div>
+                    </div>
+                </div>
+                <div class="result-box">
+                    <h3>
+                        <i class="fas fa-plus-circle"></i> A OR B (Union)
+                        <span class="result-count" id="aOrBCount">0</span>
+                    </h3>
+                    <div class="result-content" id="aOrBResults">
+                        <div class="empty">No comparison performed yet</div>
+                    </div>
+                </div>
+                <div class="result-box">
+                    <h3>
+                        <i class="fas fa-times-circle"></i> NOR (Neither A nor B)
+                        <span class="result-count" id="norCount">0</span>
+                    </h3>
+                    <div class="result-content" id="norResults">
+                        <div class="empty">No comparison performed yet</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="export-options" id="exportSection" style="display: none;">
+                <h3><i class="fas fa-download"></i> Export Results</h3>
+                <div class="export-buttons">
+                    <button class="btn btn-success" onclick="exportResults('csv')">
+                        <i class="fas fa-file-csv"></i> Export as CSV
+                    </button>
+                    <button class="btn btn-success" onclick="exportResults('txt')">
+                        <i class="fas fa-file-alt"></i> Export as Text
+                    </button>
+                    <button class="btn btn-success" onclick="exportResults('json')">
+                        <i class="fas fa-file-code"></i> Export as JSON
+                    </button>
+                </div>
+            </div>
+
+            <div class="explanation-section">
+                <h3><i class="fas fa-info-circle"></i> Understanding Your Results</h3>
+                
+                <div class="explanation-grid">
+                    <div class="explanation-card">
+                        <div class="explanation-header">
+                            <i class="fas fa-minus-circle"></i>
+                            <h4>A Only</h4>
+                        </div>
+                        <p>Items that exist <strong>only in List A</strong> and are not present in List B.</p>
+                        <div class="example">
+                            <strong>Example:</strong> If List A contains customer emails and List B contains newsletter subscribers, "A Only" shows customers who haven't subscribed to your newsletter.
+                        </div>
+                    </div>
+
+                    <div class="explanation-card">
+                        <div class="explanation-header">
+                            <i class="fas fa-intersection"></i>
+                            <h4>A & B (Intersection)</h4>
+                        </div>
+                        <p>Items that exist in <strong>both List A and List B</strong> - the common elements between the two lists.</p>
+                        <div class="example">
+                            <strong>Example:</strong> If List A contains website visitors and List B contains email subscribers, "A & B" shows visitors who have also subscribed to emails.
+                        </div>
+                    </div>
+
+                    <div class="explanation-card">
+                        <div class="explanation-header">
+                            <i class="fas fa-minus-circle"></i>
+                            <h4>B Only</h4>
+                        </div>
+                        <p>Items that exist <strong>only in List B</strong> and are not present in List A.</p>
+                        <div class="example">
+                            <strong>Example:</strong> If List A contains current customers and List B contains leads, "B Only" shows leads who haven't become customers yet.
+                        </div>
+                    </div>
+
+                    <div class="explanation-card">
+                        <div class="explanation-header">
+                            <i class="fas fa-plus-circle"></i>
+                            <h4>A OR B (Union)</h4>
+                        </div>
+                        <p>All <strong>unique items from both lists combined</strong> - no duplicates, just the complete set of all items.</p>
+                        <div class="example">
+                            <strong>Example:</strong> If List A contains email subscribers and List B contains social media followers, "A OR B" gives you your total unique audience across both platforms.
+                        </div>
+                    </div>
+
+                    <div class="explanation-card">
+                        <div class="explanation-header">
+                            <i class="fas fa-times-circle"></i>
+                            <h4>NOR (Neither A nor B)</h4>
+                        </div>
+                        <p>Items that are <strong>completely absent from both lists</strong> - this represents the complement of the union when compared to a reference set. Enable the NOR function and provide a reference set to use this feature.</p>
+                        <div class="example">
+                            <strong>Example:</strong> If List A contains active users and List B contains premium users, and your reference set contains all registered users, "NOR" shows users who are neither active nor premium (inactive free users).
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+    </script>
+</body>
+</html>

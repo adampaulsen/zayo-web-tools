@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HP CSV Cleanup Tool</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HP CSV Cleanup Tool</h1>
+            <p>Upload your HP CSV file to automatically clean and filter the data</p>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-content">
+                        <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7,10 12,15 17,10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <h3>Drop your CSV files here</h3>
+                        <p>or click to browse (you can select multiple files)</p>
+                        <input type="file" id="fileInput" accept=".csv" style="display: none;" multiple>
+                    </div>
+                </div>
+            </div>
+
+            <div class="processing-section" id="processingSection" style="display: none;">
+                <div class="progress-container">
+                    <h3>Processing your file...</h3>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <p id="progressText">Step 1: Reading file...</p>
+                </div>
+            </div>
+
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h3>Processing Complete!</h3>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="download-btn" id="downloadBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7,10 12,15 17,10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Download Cleaned CSV
+                        </button>
+                        <button class="download-btn" id="clearBtn" style="background: #e53e3e;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                            Clear Results
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Original Rows</h4>
+                        <p id="originalRows">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Filtered Rows</h4>
+                        <p id="filteredRows">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Removed Duplicates</h4>
+                        <p id="removedDuplicates">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Final Rows</h4>
+                        <p id="finalRows">0</p>
+                    </div>
+                </div>
+
+                <div class="preview-section">
+                    <h4>Preview of Cleaned Data</h4>
+                    <div class="table-container">
+                        <table id="previewTable">
+                            <thead id="previewHeader"></thead>
+                            <tbody id="previewBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div id="emptyFilesList" style="display:none; margin-top:2rem;">
+                    <h4>Files with No Matching Rows</h4>
+                    <ul id="emptyFilesUl" style="color:#e53e3e;"></ul>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h3>What this tool does:</h3>
+                <ul>
+                    <li>Removes the first row (header cleanup)</li>
+                    <li>Deletes columns F and G</li>
+                    <li>Filters for "Dark Fiber - LH" or "Dark Fiber - Metro" in column 6</li>
+                    <li>Filters for specific companies (Google, Amazon, Meta, etc.) in column 7</li>
+                    <li>Inserts a new column D</li>
+                    <li>Removes duplicates based on column 3</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

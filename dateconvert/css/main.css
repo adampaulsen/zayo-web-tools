@@ -1,0 +1,204 @@
+/* Main CSS - Core Layout and Typography */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    padding: 20px;
+    transition: background 0.3s ease;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    background: var(--surface-color);
+    border-radius: 16px;
+    box-shadow: 0 20px 40px var(--shadow-color);
+    overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.header {
+    background: var(--header-gradient);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    font-weight: 300;
+}
+
+.header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.content {
+    padding: 40px;
+}
+
+.input-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.input-group {
+    background: var(--surface-secondary);
+    padding: 25px;
+    border-radius: 12px;
+    border: 2px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.input-group h3 {
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.form-group input,
+.form-group select {
+    padding: 12px;
+    border: 2px solid var(--border-input);
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+    background-color: var(--surface-color);
+    color: var(--text-primary);
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* Force 24-hour format for time inputs */
+input[type="time"] {
+    font-family: 'Courier New', monospace;
+}
+
+input[type="time"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
+
+/* Additional 24-hour format enforcement */
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field {
+    font-family: 'Courier New', monospace;
+}
+
+/* Force 24-hour display - more aggressive approach */
+input[type="time"]::-webkit-datetime-edit {
+    font-family: 'Courier New', monospace;
+}
+
+/* Hide AM/PM indicator */
+input[type="time"]::-webkit-datetime-edit-ampm-field {
+    display: none !important;
+}
+
+/* Firefox specific */
+input[type="time"]::-moz-datetime-edit {
+    font-family: 'Courier New', monospace;
+}
+
+input[type="time"]::-moz-datetime-edit-ampm-field {
+    display: none !important;
+}
+
+/* Custom time input styles */
+input[type="text"][pattern*="[0-9]:[0-5][0-9]"] {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+.data-input {
+    grid-column: 1 / -1;
+}
+
+.data-input textarea {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    border: 2px solid var(--border-input);
+    border-radius: 8px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: vertical;
+}
+
+.data-input textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.button-section {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.compare-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.compare-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px var(--shadow-color-heavy);
+}
+
+/* Checkbox styles */
+input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-color);
+    cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+    accent-color: var(--accent-color);
+}

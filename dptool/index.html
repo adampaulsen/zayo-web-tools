@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Range Overlap Checker</title>
+    <style>
+        :root {
+            /* Light theme variables */
+            --bg-color: #f4f4f4;
+            --surface-color: #fff;
+            --text-primary: #333;
+            --text-secondary: #0056b3;
+            --border-color: #ddd;
+            --border-color-secondary: #ccc;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --button-primary: #007bff;
+            --button-hover: #0056b3;
+            --table-header: #f2f2f2;
+            --table-row-even: #f9f9f9;
+            --results-bg: #e9ecef;
+        }
+
+        [data-theme="dark"] {
+            /* Dark theme variables */
+            --bg-color: #1a1a1a;
+            --surface-color: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #4a9eff;
+            --border-color: #4a4a4a;
+            --border-color-secondary: #555;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --button-primary: #007bff;
+            --button-hover: #0056b3;
+            --table-header: #3a3a3a;
+            --table-row-even: #333;
+            --results-bg: #3a3a3a;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--button-primary);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px var(--shadow-color);
+        }
+
+        .container {
+            background-color: var(--surface-color);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-color);
+            max-width: 900px;
+            margin: 0 auto;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        h1 {
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 25px;
+            transition: color 0.3s ease;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        textarea, input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 0.95em;
+            background-color: var(--surface-color);
+            color: var(--text-primary);
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            background-color: var(--button-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        #results {
+            margin-top: 25px;
+            padding: 15px;
+            border: 1px solid var(--border-color-secondary);
+            border-radius: 4px;
+            background-color: var(--results-bg);
+            min-height: 50px;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        #results h2 {
+            margin-top: 0;
+            color: var(--text-secondary);
+            font-size: 1.2em;
+            transition: color 0.3s ease;
+        }
+
+        #overlapTableContainer {
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+            white-space: nowrap;
+            transition: border-color 0.3s ease, background-color 0.3s ease, color 0.3s ease;
+        }
+
+        th {
+            background-color: var(--table-header);
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        tr:nth-child(even) {
+            background-color: var(--table-row-even);
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container">
+        <h1>Maintenance Range Overlap Checker</h1>
+
+        <label for="maintenanceData">Paste Maintenance Data (tab-separated):</label>
+        <textarea id="maintenanceData" placeholder="Paste your maintenance data here...
+Example:
+Case Circuit Id	Diverse From Circuit ID	Diverse MR Case	Diverse Subject	Diverse Primary	Diverse 2nd	Diverse 3rd	Diverse Backup	Diverse Status	Account	Time
+OGYX/326720//ZYO	OGYX/326718//ZYO	TTN-0008553334	SPO-00076883	2025-07-08	2025-07-09	2025-07-10	2025-07-15	Maintenance Stopped	Delta Air Lines	00:01 - 06:00 Eastern (SA)"></textarea>
+
+        <label for="checkStartDateTime">Enter **Start** Date/Time to Check:</label>
+        <input type="text" id="checkStartDateTime" placeholder="YYYY-MM-DD HH:MM AM/PM Timezone (e.g., 2025-07-10 02:30 AM Eastern)">
+
+        <label for="checkEndDateTime">Enter **End** Date/Time to Check:</label>
+        <input type="text" id="checkEndDateTime" placeholder="YYYY-MM-DD HH:MM AM/PM Timezone (e.g., 2025-07-10 03:30 AM Eastern)">
+
+        <button onclick="checkForOverlaps()">Check for Overlaps</button>
+
+        <div id="results">
+            <h2>Results:</h2>
+            <p id="message"></p>
+            <div id="overlapTableContainer">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // Helper to parse date/time strings with a simple timezone map
+        function parseDateTimeWithTimezone(dateTimeStr) {
+            const regex = /(\d{4}-\d{2}-\d{2})\s+(\d{1,2}:\d{2})\s+(AM|PM)\s+([A-Za-z]+)(?:\s*\((?:SA|PSA)\))?/i;
+            const match = dateTimeStr.match(regex);
+
+            if (!match) {
+                console.error("Datetime format mismatch:", dateTimeStr);
+                return null;
+            }
+
+            const [, datePart, timePart, ampm, tzName] = match;
+            let [hours, minutes] = timePart.split(':').map(Number);
+
+            if (ampm.toUpperCase() === 'PM' && hours < 12) hours += 12;
+            if (ampm.toUpperCase() === 'AM' && hours === 12) hours = 0; // 12 AM (midnight) is 0 hours
+
+            // Map common timezone abbreviations to approximate UTC offsets (Standard Time)
+            const tzOffsets = {
+                'Eastern': -5, // UTC-5 (EST)
+                'Central': -6, // UTC-6 (CST)
+                'Mountain': -7, // UTC-7 (MST)
+                'Pacific': -8, // UTC-8 (PST)
+                // Add more as needed, considering if your data uses EDT, CDT, etc.
+                // For a robust solution, a library (Luxon, moment-timezone) is highly recommended.
+            };
+            const utcOffsetHours = tzOffsets[tzName];
+
+            if (utcOffsetHours === undefined) {
+                console.warn("Unknown or unhandled timezone:", tzName, ". Attempting to parse without specific offset adjustment.");
+                try {
+                    const dt = new Date(`${datePart}T${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:00`);
+                    return dt; // Returns a Date object in the browser's local timezone
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            // Create a Date object in UTC based on the explicit components and offset
+            // This is the most reliable way to compare across timezones without a full library.
+            // Date.UTC() creates a Date object from UTC components.
+            const dateUTC = Date.UTC(
+                parseInt(datePart.substring(0,4)),   // Year
+                parseInt(datePart.substring(5,7)) - 1, // Month (0-indexed)
+                parseInt(datePart.substring(8,10)),  // Day
+                hours - utcOffsetHours,              // Hours adjusted to UTC
+                minutes
+            );
+            return new Date(dateUTC); // Returns a Date object representing the precise UTC instant
+        }
+
+
+        function checkForOverlaps() {
+            const maintenanceData = document.getElementById('maintenanceData').value;
+            const checkStartDateTimeStr = document.getElementById('checkStartDateTime').value;
+            const checkEndDateTimeStr = document.getElementById('checkEndDateTime').value;
+            const resultsDiv = document.getElementById('results');
+            const messageP = document.getElementById('message');
+            const overlapTableContainer = document.getElementById('overlapTableContainer');
+
+            messageP.className = ''; // Clear previous status
+            messageP.textContent = '';
+            overlapTableContainer.innerHTML = ''; // Clear previous table
+
+            if (!maintenanceData.trim()) {
+                messageP.textContent = 'Please paste maintenance data.';
+                messageP.className = 'error';
+                return;
+            }
+            if (!checkStartDateTimeStr.trim() || !checkEndDateTimeStr.trim()) {
+                messageP.textContent = 'Please enter both a start and end date/time to check.';
+                messageP.className = 'error';
+                return;
+            }
+
+            // Parse user's check datetime range (converted to UTC for comparison)
+            const userCheckStartDt = parseDateTimeWithTimezone(checkStartDateTimeStr);
+            const userCheckEndDt = parseDateTimeWithTimezone(checkEndDateTimeStr);
+
+            if (!userCheckStartDt || !userCheckEndDt) {
+                messageP.textContent = 'Error: Could not parse your check start/end date/time. Please use format YYYY-MM-DD HH:MM AM/PM Timezone (e.g., 2025-07-10 02:30 AM Eastern).';
+                messageP.className = 'error';
+                return;
+            }
+            if (userCheckStartDt >= userCheckEndDt) {
+                messageP.textContent = 'Error: Your check start time must be before your end time.';
+                messageP.className = 'error';
+                return;
+            }
+
+            const lines = maintenanceData.trim().split('\n');
+            if (lines.length < 2) {
+                messageP.textContent = 'Error: Maintenance data is empty or missing header.';
+                messageP.className = 'error';
+                return;
+            }
+
+            const headerLine = lines[0];
+            const dataLines = lines.slice(1);
+
+            const headers = headerLine.split('\t').map(h => h.trim());
+
+            const dateCols = ['Diverse Primary', 'Diverse 2nd', 'Diverse 3rd', 'Diverse Backup'];
+            const overlappingEntries = [];
+
+            dataLines.forEach((line, lineIndex) => {
+                const values = line.split('\t').map(v => v.trim());
+                const rowData = {};
+                headers.forEach((header, i) => {
+                    rowData[header] = values[i];
+                });
+
+                const timeStr = rowData['Time'];
+                if (!timeStr) {
+                    console.warn(`Line ${lineIndex + 2}: Missing time string.`);
+                    return;
+                }
+
+                let eventStartTimePart, eventEndTimePart, eventTimeZoneSuffix;
+                const timeRangeMatch = timeStr.match(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})\s+([A-Za-z]+\s*(?:\([A-Za-z]+\))?)/);
+                if (timeRangeMatch) {
+                    eventStartTimePart = timeRangeMatch[1];
+                    eventEndTimePart = timeRangeMatch[2];
+                    eventTimeZoneSuffix = timeRangeMatch[3]; // e.g., "Eastern (SA)" or "Mountain"
+                } else {
+                    console.warn(`Line ${lineIndex + 2}: Could not parse time format: ${timeStr}`);
+                    return;
+                }
+
+                const [startHour, startMinute] = eventStartTimePart.split(':').map(Number);
+                const [endHour, endMinute] = eventEndTimePart.split(':').map(Number);
+
+                dateCols.forEach(col => {
+                    const eventDateStr = rowData[col];
+                    if (!eventDateStr) { // Empty string or undefined
+                        return;
+                    }
+
+                    try {
+                        // Base date for the maintenance event
+                        const eventBaseDate = new Date(eventDateStr + 'T00:00:00');
+                        if (isNaN(eventBaseDate.getTime())) {
+                            console.warn(`Line ${lineIndex + 2}: Invalid date string for ${col}: ${eventDateStr}`);
+                            return;
+                        }
+
+                        // Construct maintenance event start and end times in their local timezone
+                        let eventStartDtLocal = new Date(eventBaseDate);
+                        eventStartDtLocal.setHours(startHour, startMinute, 0, 0);
+
+                        let eventEndDtLocal = new Date(eventBaseDate);
+                        eventEndDtLocal.setHours(endHour, endMinute, 0, 0);
+
+                        // Handle overnight events (e.g., 23:00 - 05:00) by moving end date to next day
+                        if (eventEndDtLocal <= eventStartDtLocal) {
+                            eventEndDtLocal.setDate(eventEndDtLocal.getDate() + 1);
+                        }
+
+                        // Convert event times to UTC for comparison using the same logic as user input
+                        const eventStartDtUTC = parseDateTimeWithTimezone(
+                            `${eventDateStr} ${eventStartTimePart} ${startHour < 12 || (startHour === 12 && startMinute === 0) ? 'AM' : 'PM'} ${eventTimeZoneSuffix}`
+                        );
+                        const eventEndDtUTC = parseDateTimeWithTimezone(
+                            `${eventDateStr} ${eventEndTimePart} ${endHour < 12 || (endHour === 12 && endMinute === 0) ? 'AM' : 'PM'} ${eventTimeZoneSuffix}`
+                        );
+
+                        if (!eventStartDtUTC || !eventEndDtUTC) {
+                             console.warn(`Line ${lineIndex + 2}: Failed to convert event times to UTC for comparison.`);
+                             return;
+                        }
+
+                        // Adjust eventEndDtUTC if it's an overnight event (e.g., 23:00-05:00)
+                        // The parseDateTimeWithTimezone function assumes single-day times.
+                        // So, we apply the overnight adjustment *after* getting the UTC representations
+                        // of the individual start/end times.
+                        if (eventEndDtLocal <= eventStartDtLocal) {
+                           eventEndDtUTC.setDate(eventEndDtUTC.getDate() + 1);
+                        }
+
+
+                        // Overlap condition for two time ranges [A_start, A_end) and [B_start, B_end)
+                        // They overlap if (A_start < B_end) AND (A_end > B_start)
+                        const overlap = (userCheckStartDt < eventEndDtUTC) && (userCheckEndDt > eventStartDtUTC);
+
+                        if (overlap) {
+                            const overlapEntry = { ...rowData, 'Overlapping Date Field': col };
+                            overlappingEntries.push(overlapEntry);
+                            return; // Stop checking other dates for this row if an overlap is found
+                        }
+                    } catch (e) {
+                        console.error(`Error processing row ${lineIndex + 2} for column ${col}:`, e);
+                    }
+                });
+            });
+
+            if (overlappingEntries.length > 0) {
+                messageP.textContent = `Overlapping maintenance entries found with your specified range (${checkStartDateTimeStr} - ${checkEndDateTimeStr}):`;
+                messageP.className = 'error'; // Indicate a match, which is a 'warning'
+                displayTable(overlappingEntries, headers.concat(['Overlapping Date Field']));
+            } else {
+                messageP.textContent = 'No overlaps found for the specified date and time range.';
+                messageP.className = 'success';
+            }
+        }
+
+        function displayTable(data, columns) {
+            const overlapTableContainer = document.getElementById('overlapTableContainer');
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const tbody = document.createElement('tbody');
+
+            // Create table header
+            const headerRow = document.createElement('tr');
+            columns.forEach(col => {
+                const th = document.createElement('th');
+                th.textContent = col;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Create table body
+            data.forEach(rowData => {
+                const tr = document.createElement('tr');
+                columns.forEach(col => {
+                    const td = document.createElement('td');
+                    td.textContent = rowData[col] || ''; // Handle undefined/null values
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
+            table.appendChild(tbody);
+
+            overlapTableContainer.appendChild(table);
+        }
+    </script>
+
+    <script>
+        // Theme management
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+        
+        // Load saved theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+        
+        // Theme toggle functionality
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+        });
+        
+        function updateThemeIcon(theme) {
+            themeToggle.innerHTML = theme === 'light' ? '🌙' : '☀️';
+            themeToggle.title = theme === 'light' ? 'Switch to dark mode' : 'Switch to light mode';
+        }
+    </script>
+</body>
+</html>

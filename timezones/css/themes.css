@@ -1,0 +1,40 @@
+:root {
+    /* Light theme variables */
+    --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --surface-color: rgba(255, 255, 255, 0.95);
+    --surface-secondary: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    --text-primary: #333;
+    --text-heading: #2c3e50;
+    --text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --border-color: rgba(255, 255, 255, 0.2);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --shadow-color-heavy: rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="dark"] {
+    /* Dark theme variables */
+    --bg-gradient: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    --surface-color: rgba(45, 45, 45, 0.95);
+    --surface-secondary: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    --text-primary: #e0e0e0;
+    --text-heading: #f1f5f9;
+    --text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --border-color: rgba(255, 255, 255, 0.1);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --shadow-color-heavy: rgba(0, 0, 0, 0.4);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    color: var(--text-primary);
+    line-height: 1.6;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}

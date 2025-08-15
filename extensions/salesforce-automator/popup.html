@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Salesforce Automation</title>
+  <style>
+    body { font-family: sans-serif; padding: 10px; width: 300px; }
+    textarea { width: 100%; height: 100px; margin-bottom: 10px; } /* Smaller textarea */
+    .form-group { margin-bottom: 10px; }
+    .form-group label { /* This label applies to "Select Expected Impact:" */
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    .radio-option { /* New class for each radio button + label pair */
+      display: inline-block; /* Makes them sit next to each other */
+      margin-right: 15px; /* Adds space between options */
+      margin-bottom: 5px; /* Small vertical spacing */
+    }
+    .radio-option input[type="radio"] { /* Style the radio input itself if needed */
+      vertical-align: middle; /* Align radio button with text */
+      margin-right: 3px; /* Space between radio and its label */
+    }
+    .radio-option label { /* Style for labels directly next to radio buttons */
+      vertical-align: middle; /* Align radio button with text */
+      display: inline; /* Ensure label is inline with radio button */
+      font-weight: normal; /* Override bold from .form-group label if necessary */
+    }
+
+    button { width: 100%; padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+    button:hover { background-color: #45a049; }
+    #status { margin-top: 10px; color: green; }
+    .error { color: red; }
+  </style>
+</head>
+<body>
+  <h3>Paste Service Components (one per line)</h3>
+  <textarea id="itemList" placeholder="e.g., ServiceComponentID1&#10;ServiceComponentID2"></textarea>
+
+  <div class="form-group">
+    <label>Select Expected Impact:</label>
+    <div class="radio-group">
+      <div class="radio-option">
+        <input type="radio" id="impactSwitchHits" name="expectedImpact" value="Switch Hit(s)" checked>
+        <label for="impactSwitchHits">Switch Hit(s)</label>
+      </div>
+
+      <div class="radio-option">
+        <input type="radio" id="impactHardDown" name="expectedImpact" value="Hard Down">
+        <label for="impactHardDown">Hard Down</label>
+      </div>
+
+      <div class="radio-option">
+        <input type="radio" id="impactNoExpected" name="expectedImpact" value="No Expected Impact">
+        <label for="impactNoExpected">No Expected Impact</label>
+      </div>
+
+      <div class="radio-option">
+        <input type="radio" id="impactRemove" name="expectedImpact" value="Remove">
+        <label for="impactRemove">Remove</label>
+      </div>
+    </div>
+  </div>
+
+  <button id="automateButton">Start Automation</button>
+  <div id="status"></div>
+  <script src="popup.js"></script>
+</body>
+</html>

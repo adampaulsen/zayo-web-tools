@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Formatter - Splice Point Tool</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+        🌙
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1>Text Formatter</h1>
+            <p>Format Splice Point summaries for better readability</p>
+        </div>
+        
+        <div class="content">
+            <div class="input-section">
+                <label for="inputText">Input Text:</label>
+                <textarea 
+                    id="inputText" 
+                    placeholder="Paste your text here..."
+                    rows="8"
+                ></textarea>
+            </div>
+
+            <div class="controls">
+                <button id="formatBtn" class="btn btn-primary">Format Text</button>
+                <button id="clearBtn" class="btn btn-secondary">Clear All</button>
+                <button id="copyBtn" class="btn btn-success" disabled>Copy Formatted Text</button>
+                <button id="extractHighProfileBtn" class="btn btn-warning" disabled>Extract High Profile Cases</button>
+            </div>
+
+            <div class="output-section">
+                <label for="outputText">Formatted Output:</label>
+                <textarea 
+                    id="outputText" 
+                    placeholder="Formatted text will appear here..."
+                    rows="8"
+                    readonly
+                ></textarea>
+            </div>
+
+            <div class="info-section">
+                <h3>How it works:</h3>
+                <ul>
+                    <li>Paste your Splice Point summary text in the input field</li>
+                    <li>Click "Format Text" to convert the inline format to line-by-line format</li>
+                    <li>Use "Copy Formatted Text" to copy the result to your clipboard</li>
+                    <li>Use "Clear All" to reset both input and output fields</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 Raylos</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
