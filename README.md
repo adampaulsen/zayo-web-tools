@@ -13,7 +13,7 @@ A comprehensive collection of web-based tools for various tasks including data p
   - Copy to clipboard
 - **Usage**: Paste text containing CIDs and click "Extract IDs"
 
-### 2. **Text Formatter** (`textformatter/`)
+### 2. **Splice Point Text Formatter** (`textformatter/`)
 - **Purpose**: Format and clean text data
 - **Features**: Text cleaning, formatting, and transformation tools
 

@@ -1,4 +1,4 @@
-# Text Formatter - Splice Point Tool
+# Splice Point Text Formatter - Splice Point Tool
 
 A web-based tool designed to format Splice Point summaries for better readability. This tool converts inline, slash-separated text into a clean, line-by-line format.
 
