@@ -294,6 +294,14 @@ class EmbargoHighCleaner {
         
         // More robust header removal - check if first row looks like headers
         if (processed.length > 0) {
+            console.log('=== HEADER DETECTION DEBUG ===');
+            console.log('Total rows to process:', processed.length);
+            
+            // Check first few rows to see what we're dealing with
+            for (let i = 0; i < Math.min(5, processed.length); i++) {
+                console.log(`Row ${i}:`, processed[i]);
+            }
+            
             const firstRow = processed[0];
             console.log('Analyzing first row for header detection:');
             console.log('First row content:', firstRow);
@@ -314,9 +322,11 @@ class EmbargoHighCleaner {
             if (isHeaderRow) {
                 console.log('First row appears to be headers, removing...');
                 processed = processed.slice(1);
+                console.log('Rows after header removal:', processed.length);
             } else {
                 console.log('First row does not appear to be headers, keeping...');
             }
+            console.log('=== END HEADER DETECTION DEBUG ===');
         }
         
         console.log('After header removal:', processed.length, 'rows');
@@ -324,11 +334,20 @@ class EmbargoHighCleaner {
         this.updateProgress(50, 'Removing header row...');
         
         // Step 2: Delete columns F and G (indices 5 and 6 in 0-based)
+        console.log('=== COLUMN REMOVAL DEBUG ===');
+        console.log('Before column removal - first row:', processed[0]);
+        console.log('Before column removal - first row length:', processed[0] ? processed[0].length : 'N/A');
+        
         processed = processed.map(row => {
             const newRow = [...row];
             newRow.splice(5, 2); // Remove columns F and G
             return newRow;
         });
+        
+        console.log('After column removal - first row:', processed[0]);
+        console.log('After column removal - first row length:', processed[0] ? processed[0].length : 'N/A');
+        console.log('=== END COLUMN REMOVAL DEBUG ===');
+        
         this.updateProgress(60, 'Removing columns F and G...');
 
         // Normalize all fields: trim whitespace and tabs
