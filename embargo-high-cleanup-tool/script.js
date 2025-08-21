@@ -123,8 +123,11 @@ class EmbargoHighCleaner {
                 this.updateProgress(5 + Math.floor(80 * i / files.length), `Processing file ${i+1} of ${files.length}...`);
                 const text = await this.readFileAsText(files[i]);
                 const data = this.parseCSV(text);
+                console.log(`File ${i+1} (${files[i].name}): ${data.length} rows parsed`);
+                console.log(`File ${i+1} first 3 rows:`, data.slice(0, 3));
                 totalOriginalRows += data.length;
                 const cleaned = this.applyTransformations(data);
+                console.log(`File ${i+1} after transformations: ${cleaned.length} rows`);
                 totalRemovedDuplicates += this.stats.removedDuplicates;
                 allProcessed = allProcessed.concat(cleaned);
                 
@@ -240,10 +243,14 @@ class EmbargoHighCleaner {
 
     parseCSV(text) {
         const lines = text.split('\n');
+        console.log('Raw text split into', lines.length, 'lines');
+        console.log('First few raw lines:', lines.slice(0, 5));
+        
         const data = [];
         
         for (let i = 0; i < lines.length; i++) {
             const line = lines[i].trim();
+            console.log(`Line ${i}: "${line}" (length: ${line.length})`);
             if (line) {
                 // Simple CSV parsing - split by comma but handle quoted values
                 const row = this.parseCSVLine(line);
@@ -251,6 +258,8 @@ class EmbargoHighCleaner {
             }
         }
         
+        console.log('Parsed CSV data:', data.length, 'rows');
+        console.log('First parsed row:', data[0]);
         return data;
     }
 
@@ -280,7 +289,11 @@ class EmbargoHighCleaner {
         let processed = [...data];
         
         // Step 1: Remove first row (equivalent to Rows("1:1").Select and Delete)
+        console.log('Before header removal:', processed.length, 'rows');
+        console.log('First row before removal:', processed[0]);
         processed = processed.slice(1);
+        console.log('After header removal:', processed.length, 'rows');
+        console.log('First row after removal:', processed[0]);
         this.updateProgress(50, 'Removing header row...');
         
         // Step 2: Delete columns F and G (indices 5 and 6 in 0-based)
@@ -452,6 +465,10 @@ class EmbargoHighCleaner {
             alert('No data to download');
             return;
         }
+        
+        console.log('Downloading CSV with', this.processedData.length, 'rows');
+        console.log('First few rows of processed data:', this.processedData.slice(0, 3));
+        
         // Add header row
         const header = [
             'Sheath',
@@ -472,6 +489,8 @@ class EmbargoHighCleaner {
             newRow[3] = `=IF(C${rowNumber}="","",CONCATENATE(E${rowNumber}," | ",C${rowNumber}))`;
             return newRow;
         });
+        
+        console.log('Data with formulas (first few rows):', dataWithFormulas.slice(0, 3));
         const csvContent = this.convertToCSV([header, ...dataWithFormulas]);
         
         // Generate unique filename
