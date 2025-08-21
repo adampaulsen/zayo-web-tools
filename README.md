@@ -41,11 +41,19 @@ A comprehensive collection of web-based tools for various tasks including data p
 - **Purpose**: Clean and format HP CSV data
 - **Features**: Data cleaning and formatting for HP systems
 
-### 9. **DP Tool** (`dptool/`)
+### 9. **Embargo High Cleanup Tool** (`embargo-high-cleanup-tool/`)
+- **Purpose**: Process Dark Fiber CSV data with FSB report enhancement
+- **Features**: 
+  - Processes all CSV rows while identifying Dark Fiber items
+  - Extracts SC numbers or Service Names from FSB reports
+  - Adds new "SC or Service" column for enhanced data
+  - Maintains all original data with selective Dark Fiber enhancement
+
+### 10. **DP Tool** (`dptool/`)
 - **Purpose**: Data processing tool
 - **Features**: Various data processing utilities
 
-### 10. **Compare Tool** (`compare/`)
+### 11. **Compare Tool** (`compare/`)
 - **Purpose**: Compare data sets or files
 - **Features**: Data comparison and analysis
 
@@ -89,6 +97,8 @@ zayo-web-tools/
 │   └── index.html          # Business days calculator
 ├── hp-csv-cleanup-tool/
 │   └── index.html          # HP CSV cleanup
+├── embargo-high-cleanup-tool/
+│   └── index.html          # Embargo High Cleanup Tool
 ├── dptool/
 │   └── index.html          # Data processing tool
 └── compare/
@@ -123,5 +133,5 @@ For issues or questions:
 
 ---
 
-**Last Updated**: August 15, 2025
+**Last Updated**: August 21, 2025
 **Version**: 1.0.0
