@@ -291,7 +291,34 @@ class EmbargoHighCleaner {
         // Step 1: Remove first row (equivalent to Rows("1:1").Select and Delete)
         console.log('Before header removal:', processed.length, 'rows');
         console.log('First row before removal:', processed[0]);
-        processed = processed.slice(1);
+        
+        // More robust header removal - check if first row looks like headers
+        if (processed.length > 0) {
+            const firstRow = processed[0];
+            console.log('Analyzing first row for header detection:');
+            console.log('First row content:', firstRow);
+            console.log('First row cell types:', firstRow.map(cell => typeof cell));
+            
+            const isHeaderRow = firstRow.some(cell => 
+                typeof cell === 'string' && 
+                (cell.toLowerCase().includes('sheath') || 
+                 cell.toLowerCase().includes('fiber') || 
+                 cell.toLowerCase().includes('dfid') ||
+                 cell.toLowerCase().includes('network') ||
+                 cell.toLowerCase().includes('product') ||
+                 cell.toLowerCase().includes('customer'))
+            );
+            
+            console.log('Header detection result:', isHeaderRow);
+            
+            if (isHeaderRow) {
+                console.log('First row appears to be headers, removing...');
+                processed = processed.slice(1);
+            } else {
+                console.log('First row does not appear to be headers, keeping...');
+            }
+        }
+        
         console.log('After header removal:', processed.length, 'rows');
         console.log('First row after removal:', processed[0]);
         this.updateProgress(50, 'Removing header row...');
