@@ -357,6 +357,30 @@ class EmbargoHighCleaner {
         // We'll mark Dark Fiber rows for special processing
         let darkFiberCount = 0;
         let totalRows = 0;
+        
+        // Filter out metadata rows that shouldn't be in the final output
+        processed = processed.filter(row => {
+            if (row.length > 0) {
+                const firstCell = (row[0] || '').toLowerCase();
+                const secondCell = (row[1] || '').toLowerCase();
+                
+                // Skip rows that are clearly metadata
+                if (firstCell.includes('sheath') && secondCell.includes('fiber')) {
+                    console.log('Filtering out duplicate header row:', row);
+                    return false;
+                }
+                if (firstCell.includes('cable impact report')) {
+                    console.log('Filtering out metadata row:', row);
+                    return false;
+                }
+                if (firstCell.includes('report') && secondCell.includes('2025')) {
+                    console.log('Filtering out date metadata row:', row);
+                    return false;
+                }
+            }
+            return true;
+        });
+        
         processed = processed.map(row => {
             if (row.length > 5) {
                 const fiberType = (row[5] || '').toLowerCase();
